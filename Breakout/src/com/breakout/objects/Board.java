@@ -38,7 +38,7 @@ public class Board extends JPanel implements Commons {
         bricks = new Brick[30];
         setDoubleBuffered(true);
         timer = new Timer();
-        timer.scheduleAtFixedRate(new ScheduleTask(), 1000, 10);
+        timer.scheduleAtFixedRate(new ScheduleTask(), 1000, 5);
     }
 
         public void addNotify() {
@@ -55,8 +55,8 @@ public class Board extends JPanel implements Commons {
         int k = 0;
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 6; j++) {
-            	// X Gap between bricks + X gap from left side, Y Gap between bricks + Y gap from
-                bricks[k] = new Brick(j * 40 + 30, i * 40 + 50);
+            	// X Gap between bricks + X gap from left side, Y Gap between bricks + Y gap from top
+                bricks[k] = new Brick(j * 40 + 30, i * 20 + 50);
                 k++;
             }
         }
@@ -71,13 +71,18 @@ public class Board extends JPanel implements Commons {
                         ball.getWidth(), ball.getHeight(), this);
             g.drawImage(paddle.getImage(), paddle.getX(), paddle.getY(),
                         paddle.getWidth(), paddle.getHeight(), this);
-
+            int x = 0;
             for (int i = 0; i < 30; i++) {
-                if (!bricks[i].isDestroyed())
+                if (!bricks[i].isDestroyed()){
+                	x++;
                     g.drawImage(bricks[i].getImage(), bricks[i].getX(),
                                 bricks[i].getY(), bricks[i].getWidth(),
                                 bricks[i].getHeight(), this);
+                }
+                	
             }
+            // Game info bar ( bottom of application )
+            g.drawString("SCORE:" + x, Commons.SCORE_WIDTH, Commons.SCORE_HEIGHT);
         } else {
 
             Font font = new Font("Verdana", Font.BOLD, 18);

@@ -43,6 +43,10 @@ public class Paddle extends Sprite implements Commons {
         if (key == KeyEvent.VK_RIGHT) {
             dx = 2;
         }
+        
+        if (key == KeyEvent.VK_P){
+        	// Pause the ball
+        }
     }
 
     public void keyReleased(KeyEvent e) {

@@ -55,7 +55,8 @@ public class Board extends JPanel implements Commons {
         int k = 0;
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 6; j++) {
-                bricks[k] = new Brick(j * 40 + 30, i * 10 + 50);
+            	// X Gap between bricks + X gap from left side, Y Gap between bricks + Y gap from
+                bricks[k] = new Brick(j * 40 + 30, i * 40 + 50);
                 k++;
             }
         }
@@ -117,15 +118,20 @@ public class Board extends JPanel implements Commons {
 
         }
     }
-
+    /**
+     *  
+     * */
     public void stopGame() {
         ingame = false;
         timer.cancel();
     }
 
 
+    /**
+     * 
+     * */
     public void checkCollision() {
-
+    	
         if (ball.getRect().getMaxY() > Commons.BOTTOM) {
             stopGame();
         }

@@ -5,11 +5,11 @@ import java.awt.Rectangle;
 
 public class Sprite {
 
-    protected int x;
-    protected int y;
-    protected int width;
-    protected int heigth;
-    protected Image image;
+    protected int x; // Current position X on board of object
+    protected int y; // Current position Y on board of object
+    protected int width; // Width of object
+    protected int heigth; // Height of object
+    protected Image image; //Image file
 
 
     public void setX(int x) {

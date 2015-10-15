@@ -16,8 +16,7 @@ public class Ball extends Sprite implements Commons {
 
      xdir = 1;
      ydir = -1;
-     System.out.println(this.getClass());
-     System.out.println(this.getClass().getResource(ball));
+     
      ImageIcon ii = new ImageIcon(this.getClass().getResource(ball));
      image = ii.getImage();
 

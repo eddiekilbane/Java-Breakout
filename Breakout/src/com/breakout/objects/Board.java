@@ -15,6 +15,7 @@ import java.util.TimerTask;
 import javax.swing.JPanel;
 
 import com.breakout.interfaces.Commons;
+import com.breakout.score.Lives;
 
 @SuppressWarnings("serial")
 public class Board extends JPanel implements Commons {
@@ -25,6 +26,7 @@ public class Board extends JPanel implements Commons {
     Ball ball;
     Paddle paddle;
     Brick bricks[];
+    Lives lives;
 
     boolean ingame = true;
     int timerId;
@@ -41,16 +43,19 @@ public class Board extends JPanel implements Commons {
         timer.scheduleAtFixedRate(new ScheduleTask(), 1000, 5);
     }
 
-        public void addNotify() {
-            super.addNotify();
-            gameInit();
-        }
+    public void addNotify() {
+    	
+    	super.addNotify();
+        gameInit();
+    }
 
     public void gameInit() {
-
-        ball = new Ball();
+    	
+    	ball = new Ball();
         paddle = new Paddle();
-
+        
+        // Set Lives to 3
+        lives = new Lives();
 
         int k = 0;
         for (int i = 0; i < 5; i++) {
@@ -82,7 +87,8 @@ public class Board extends JPanel implements Commons {
                 	
             }
             // Game info bar ( bottom of application )
-            g.drawString("SCORE:" + x, Commons.SCORE_WIDTH, Commons.SCORE_HEIGHT);
+            g.drawString("SCORE: " +(30 - x), Commons.SCORE_WIDTH, Commons.SCORE_HEIGHT);
+            g.drawString("LIVES: " + ( Lives.NUMBER_OF_LIVES - lives.getRemainingLives() ), Commons.SCORE_WIDTH + 80, Commons.SCORE_HEIGHT);
         } else {
 
             Font font = new Font("Verdana", Font.BOLD, 18);
@@ -125,20 +131,33 @@ public class Board extends JPanel implements Commons {
     }
     /**
      *  
-     * */
+     **/
     public void stopGame() {
         ingame = false;
         timer.cancel();
     }
-
+    
+    /**
+     * 
+     **/
+    public void pauseGame(){
+    	timer.cancel();
+    }
+    
+    /**
+     * 
+     **/
+    public void resumeGame(){
+    	timer = new Timer();
+    	timer.scheduleAtFixedRate(new ScheduleTask(), 1000, 5);
+    }
 
     /**
      * 
      * */
     public void checkCollision() {
-    	
-        if (ball.getRect().getMaxY() > Commons.BOTTOM) {
-            stopGame();
+        if (ball.getRect().getMaxY() > Commons.BOTTOM) { 	
+        	checkLives();
         }
 
         for (int i = 0, j = 0; i < 30; i++) {
@@ -196,33 +215,50 @@ public class Board extends JPanel implements Commons {
                 int ballWidth = (int)ball.getRect().getWidth();
                 int ballTop = (int)ball.getRect().getMinY();
 
-                Point pointRight =
-                    new Point(ballLeft + ballWidth + 1, ballTop);
+                Point pointRight = new Point(ballLeft + ballWidth + 1, ballTop);
                 Point pointLeft = new Point(ballLeft - 1, ballTop);
                 Point pointTop = new Point(ballLeft, ballTop - 1);
-                Point pointBottom =
-                    new Point(ballLeft, ballTop + ballHeight + 1);
+                Point pointBottom = new Point(ballLeft, ballTop + ballHeight + 1);
 
                 if (!bricks[i].isDestroyed()) {
                     if (bricks[i].getRect().contains(pointRight)) {
                         ball.setXDir(-1);
                     }
-
                     else if (bricks[i].getRect().contains(pointLeft)) {
                         ball.setXDir(1);
                     }
-
                     if (bricks[i].getRect().contains(pointTop)) {
                         ball.setYDir(1);
                     }
-
                     else if (bricks[i].getRect().contains(pointBottom)) {
                         ball.setYDir(-1);
                     }
-
                     bricks[i].setDestroyed(true);
                 }
             }
         }
     }
+    /**
+     * Function to check that the player has remaining lives 
+     **/
+	private void checkLives() {
+		if ( lives.getRemainingLives() == Lives.NUMBER_OF_LIVES ){
+			stopGame();
+		}else{
+			lives.setRemainingLives( lives.getRemainingLives() + 1 );
+			resetBall();
+		}
+	}
+	
+	/**
+	 * Function to reset ball location 
+	 **/
+	private void resetBall(){
+		ball.setXDir(1);
+		ball.setYDir(-1);
+		ball.setX(150);
+		ball.setY(240);
+		pauseGame();
+		resumeGame();
+	}
 }
